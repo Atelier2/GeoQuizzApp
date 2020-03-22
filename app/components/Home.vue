@@ -1,26 +1,16 @@
 <template>
-    <Page>
-        <ActionBar>
-            <Label text="Home"></Label>
-        </ActionBar>
-
-        <GridLayout>
-            <Label class="info">
-                <FormattedString>
-                    <Span class="fas" text.decode="&#xf135; "/>
-                    <Span :text="message"/>
-                </FormattedString>
-            </Label>
-        </GridLayout>
-    </Page>
+    <SignIn></SignIn>
 </template>
 
 <script>
+    import SignIn from "../views/SignIn";
+
     export default {
-        computed: {
-            message() {
-                return "Blank {N}-Vue app";
-            }
+        components: {
+            SignIn
+        },
+        methods: {
+
         }
     };
 </script>

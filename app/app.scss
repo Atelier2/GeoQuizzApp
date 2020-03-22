@@ -1,5 +1,5 @@
 @import "~@nativescript/theme/core";
-@import "~@nativescript/theme/blue";
+//@import "~@nativescript/theme/blue";
 
 // Place any CSS rules you want to apply on both iOS and Android here.
 // This is where the vast majority of your CSS code goes.
@@ -18,4 +18,63 @@
 .far {
     font-family: "Font Awesome 5 Free", "fa-regular-400";
     font-weight: 400;
+}
+
+.page {
+    align-items: center;
+    flex-direction: column;
+    background-color: #404040;
+}
+.form {
+    margin-left: 1;
+    margin-right: 1;
+    flex-grow: 2;
+    vertical-align: middle;
+}
+
+.logo {
+    margin-bottom: 12;
+    height: 90;
+    font-weight: bold;
+}
+.header {
+    horizontal-align: center;
+    font-size: 25;
+    font-weight: 600;
+    margin-bottom: 50;
+    text-align: center;
+    color: #ef4445;
+}
+
+.input-field {
+    margin-bottom: 25;
+}
+.input {
+    font-size: 18;
+}
+.input-field .input {
+    font-size: 54;
+}
+
+.btn-primary {
+    height: 50;
+    margin: 30 5 15 5;
+    background-color: #ef4445;
+    border-radius: 5form {
+        margin-left: 4;
+        margin-right: 4;
+    };
+    font-size: 20;
+    font-weight: 600;
+}
+.login-label {
+    horizontal-align: center;
+    color: #FFFFFF;
+    font-size: 16;
+}
+.sign-up-label {
+    margin-bottom: 20;
+}
+.bold {
+    color: #000000;
 }
