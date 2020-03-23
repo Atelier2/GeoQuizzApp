@@ -8,9 +8,6 @@
     export default {
         components: {
             SignIn
-        },
-        methods: {
-
         }
     };
 </script>

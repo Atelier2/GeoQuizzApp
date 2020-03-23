@@ -31,6 +31,7 @@
 
 <script>
     import SignUp from "./SignUp";
+    import OptionSelect from "./OptionSelect";
 
     export default {
         name: "SignIn",
@@ -42,9 +43,24 @@
         },
         methods: {
             signIn() {
-                // TODO: axios request to route /user/signin
-                console.log('email', this.email);
-                console.log('password', this.password);
+                this.$navigateTo(OptionSelect);
+
+                /*global.axios.post('user/signin', {}, {
+                    auth: {
+                        username: this.email,
+                        password: this.password
+                    }
+                }).then(response => {
+                    global.token = `Bearer ${response.data.token}`;
+                    console.log(`Je me suis bien connecté et mon token est ${response.data.token}`);
+                    // TODO: go to main page
+                }).catch(err => {
+                    alert({
+                        title: "Error",
+                        message: err.message,
+                        okButtonText: "OK"
+                    });
+                });*/
             },
 
             goToSignUp() {

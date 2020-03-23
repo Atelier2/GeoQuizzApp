@@ -92,9 +92,39 @@
         },
         methods: {
             signUp() {
-                // TODO: axios request to route /user/signin
-                console.log('email', this.email);
-                console.log('password', this.password);
+                this.goToSignIn();
+
+                /*let params = {
+                    firstname: this.firstname,
+                    lastname: this.lastname,
+                    email: this.email,
+                    password: this.password,
+                    phone: this.phone,
+                    street_number: this.streetNumber,
+                    street: this.streetName,
+                    city: this.city,
+                    zip_code: this.zipCode
+                };
+
+                if (this.password === this.confirmPassword) {
+                    global.axios.post('user/signup', params)
+                        .then(response => {
+                            console.log(response.data);
+                            this.goToSignIn();
+                        }).catch(err => {
+                            alert({
+                                title: "Error",
+                                message: err.message,
+                                okButtonText: "OK"
+                            });
+                    });
+                } else {
+                    alert({
+                        title: "Error",
+                        message: "Your passwords are not identical.",
+                        okButtonText: "OK"
+                    });
+                }*/
             },
 
             goToSignIn() {
