@@ -1,8 +1,9 @@
 <template>
     <Page>
-        <StackLayout>
-            <Label :text="text"/>
-            <Button v-show="uploadDone" text="OK" @tap="$modal.close" />
+        <StackLayout class="upload-modal">
+            <ActivityIndicator v-if="!uploadDone" busy="true" class="upload-modal-activity"/>
+            <Label class="upload-modal-text" v-show="uploadDone" :text="text"/>
+            <Button class="upload-modal-btn" v-show="uploadDone" text="OK" @tap="$modal.close" fontSize="18"/>
         </StackLayout>
     </Page>
 </template>
@@ -15,64 +16,68 @@
         ],
         data() {
             return {
-                text: "Please wait...",
+                text: null,
                 uploadDone: false
             }
         },
         methods: {
-            progressHandler() {
-                this.text = "Please wait...";
-            },
-
             errorHandler(event) {
-                // TODO: improve style and ask why error 400
-                console.log("error", event.responseCode);
-                this.text = "An error occured.";
+                this.text = `An error ${event.responseCode} occured.`;
                 this.uploadDone = true;
             },
 
-            respondedHandler(event) {
-                console.log("Upload finished!");
-                let url = JSON.parse(event.data).data.url;
-                this.text = `Uploaded here ${url}`;
+            respondedHandler() {
+                this.text = "Uploaded!";
                 this.uploadDone = true;
-            },
-
-            completeHandler() {
-                console.log("Server responded");
             },
 
             cancelledHandler() {
-                console.log("Upload was cancelled.");
                 this.text = "Upload was cancelled.";
                 this.uploadDone = true;
             },
         },
         created(){
             global.bus.$on("uploadRequested", imageAsset => {
-                console.log("upload requested listened");
                 let filePath = imageAsset._android !== undefined ? imageAsset._android : imageAsset._ios;
-                let fileName = filePath.substr(filePath.lastIndexOf("/") + 1);
-                let task = global.bghttpSession.uploadFile(filePath, {
+                let request = {
                     url: `https://api.imgbb.com/1/upload?key=${global.apiKey}`,
                     method: "POST",
                     headers: {
                         "Content-Type": "application/octet-stream"
                     },
-                    description: "Uploading " + fileName
-                });
-                console.log("tast", task);
+                    description: "Uploading image"
+                };
+                let params = [
+                    { name: "image", filename: filePath, mimeType: "img/jpeg" }
+                ];
 
-                task.on("progress", this.progressHandler);
-                task.on("error", this.errorHandler);
-                task.on("responded", this.respondedHandler);
-                task.on("complete", this.completeHandler);
-                task.on("cancelled", this.cancelledHandler);
+                let upload = global.bghttpSession.multipartUpload(params, request);
+
+                upload.on("error", this.errorHandler);
+                upload.on("responded", this.respondedHandler);
+                upload.on("cancelled", this.cancelledHandler);
             });
         }
     }
 </script>
 
 <style scoped>
-
+    .upload-modal {
+        background-color: #404040;
+        padding: 15;
+    }
+    .upload-modal-btn {
+        background-color: #ef4445;
+        border-radius: 10;
+        width: 200;
+    }
+    .upload-modal-activity {
+        width: 100;
+        height: 100;
+        color: #ef4445;
+    }
+    .upload-modal-text {
+        font-size: 18;
+        padding-bottom: 10;
+    }
 </style>
