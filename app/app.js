@@ -25,8 +25,19 @@ global.user = null;
 
 // Checkboxes
 Vue.registerElement(
-    'Checkbox',
-    () => require('@nstudio/nativescript-checkbox')
+    'CheckBox',
+    () => require('@nstudio/nativescript-checkbox').CheckBox,
+    {
+        model: {
+            prop: 'checked',
+            event: 'checkedChange'
+        }
+    }
+);
+
+Vue.registerElement(
+    'Fab',
+    () => require('@nstudio/nativescript-floatingactionbutton').Fab
 );
 
 new Vue({

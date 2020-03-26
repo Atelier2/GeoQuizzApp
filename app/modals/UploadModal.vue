@@ -10,17 +10,15 @@
 
 <script>
     import { uploadToImgBB } from "../modules/PhotoModule";
-    import SignIn from "../views/SignIn";
+    import OptionSelect from "../views/OptionSelect";
 
     export default {
         name: "AddTodoModal",
-        props: [
-
-        ],
         data() {
             return {
                 text: null,
-                uploadDone: false
+                uploadDone: false,
+                seriesToAddThePictureTo: null
             }
         },
         methods: {
@@ -31,25 +29,41 @@
                     longitude: image.location.longitude,
                     link: url
                 }).then(response => {
-                    this.text = "Uploaded!";
-                    this.uploadDone = true;
-                }).catch(err => {
-                    let errorResponse = JSON.parse(err.response.request._response);
-                    if (errorResponse.error === 401) {
-                        alert({
-                            title: "Error",
-                            message: "Your session expired, you must sign back in.",
-                            okButtonText: "Sign In"
-                        }).then(() => {
-                            this.$navigateTo(SignIn);
+                    if (this.seriesToAddThePictureTo !== null) {
+                        global.axios.post(`users/${global.user.id}/pictures/${response.data.picture.id}/series/`, {
+                            series: this.seriesToAddThePictureTo
+                        }).then(response => {
+                            this.text = "Uploaded!";
+                            this.uploadDone = true;
+                            this.$navigateTo(OptionSelect);
+                        }).catch(err => {
+                            this.tokenExpired(err);
                         });
+                    } else {
+                        this.text = "Uploaded!";
+                        this.uploadDone = true;
                     }
+                }).catch(err => {
+                    this.tokenExpired(err);
                 });
             },
 
             ImgBBErrorHandler() {
                 this.text = "An error occured!";
                 this.uploadDone = true;
+            },
+
+            tokenExpired(err) {
+                let errorResponse = JSON.parse(err.response.request._response);
+                if (errorResponse.error === 401) {
+                    alert({
+                        title: "Error",
+                        message: "Your session expired, you must sign back in.",
+                        okButtonText: "Sign In"
+                    }).then(() => {
+                        this.$navigateTo(SignIn);
+                    });
+                }
             }
         },
         created(){
@@ -57,7 +71,10 @@
                 uploadToImgBB(image, this.uploadToGeoQuizz, this.ImgBBErrorHandler);
             });
 
-            //global.bus.$on("uploadToSeries", image)
+            global.bus.$on("addToSeries", (image, seriesTab) => {
+                uploadToImgBB(image, this.uploadToGeoQuizz, this.ImgBBErrorHandler);
+                this.seriesToAddThePictureTo = seriesTab;
+            });
         }
     }
 </script>

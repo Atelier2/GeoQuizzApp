@@ -14,6 +14,7 @@
   "dependencies": {
     "@nativescript/theme": "~2.3.0",
     "@nstudio/nativescript-checkbox": "^1.0.0",
+    "@nstudio/nativescript-floatingactionbutton": "^2.0.0",
     "axios": "^0.19.2",
     "base-64": "^0.1.0",
     "nativescript-background-http": "^4.2.1",

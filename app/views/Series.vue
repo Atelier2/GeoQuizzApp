@@ -2,25 +2,50 @@
     <Page>
         <ActionBar title="GeoQuizz" style="background-color: #ef4445"></ActionBar>
 
-        <ScrollView>
-            <FlexboxLayout orientation="vertical" class="page">
-                <SeriesBox v-for="item in series" :city="item.city" :zoom="item.zoom" :nbPictures="item.nb_pictures"/>
-            </FlexboxLayout>
-        </ScrollView>
+        <GridLayout>
+            <ScrollView>
+                <FlexboxLayout orientation="vertical" class="page">
+                    <SeriesBox v-for="item in series" :series="item" />
+                </FlexboxLayout>
+            </ScrollView>
+            <fab v-show="seriesIds.length !== 0" @tap="takePhoto" row="1" text="✓" rippleColor="#f1f1f1" class="ok-button" />
+        </GridLayout>
     </Page>
 </template>
 
 <script>
     import SignIn from "./SignIn";
     import SeriesBox from "../components/SeriesBox";
+    import { take } from "../modules/PhotoModule";
+    import UploadModal from "../modals/UploadModal";
 
     export default {
         name: "Series",
         components: {SeriesBox},
         data() {
             return {
-                series: []
+                series: [],
+                seriesIds: []
             }
+        },
+        methods: {
+            takePhoto() {
+                take(this.upload);
+            },
+
+            upload(image) {
+                this.$showModal(UploadModal);
+                global.bus.$emit("addToSeries", image, this.seriesIds);
+            },
+        },
+        created() {
+            global.bus.$on("seriesAdded", seriesId => {
+                this.seriesIds.push(seriesId);
+            });
+
+            global.bus.$on("seriesDeleted", seriesId => {
+                this.seriesIds.splice(this.seriesIds.indexOf(seriesId), 1);
+            });
         },
         mounted() {
             global.axios.get(`users/${global.user.id}/series/`)
@@ -46,5 +71,13 @@
     .page {
         align-items: flex-start;
         padding: 20;
+    }
+    .ok-button {
+        height: 70;
+        width: 70;
+        margin: 15;
+        background-color: #ef4445;
+        horizontal-align: right;
+        vertical-align: bottom;
     }
 </style>

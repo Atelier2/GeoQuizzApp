@@ -1,19 +1,34 @@
 <template>
-    <StackLayout class="series-box">
-        <Label :text="'city: '+city"/>
-        <Label :text="'zoom: '+zoom"/>
-        <Label :text="'pictures: '+nbPictures"/>
-    </StackLayout>
+    <FlexboxLayout class="series-box">
+        <CheckBox :checked="isChecked" @checkedChange="isChecked = $event.value" />
+        <StackLayout>
+            <Label :text="'city: '+series.city"/>
+            <Label :text="'zoom: '+series.zoom"/>
+            <Label :text="'pictures: '+series.nb_pictures"/>
+        </StackLayout>
+    </FlexboxLayout>
 </template>
 
 <script>
     export default {
         name: "SeriesBox",
         props: [
-            "city",
-            "zoom",
-            "nbPictures"
-        ]
+            "series"
+        ],
+        data() {
+            return {
+                isChecked: false
+            }
+        },
+        watch: {
+            isChecked: function (isChecked) {
+                if (isChecked) {
+                    global.bus.$emit("seriesAdded", this.series.id);
+                } else {
+                    global.bus.$emit("seriesDeleted", this.series.id);
+                }
+            }
+        }
     }
 </script>
 
