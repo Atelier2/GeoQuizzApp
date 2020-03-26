@@ -2,11 +2,6 @@ import Vue from "nativescript-vue";
 import Axios from "axios";
 import Home from "./components/Home";
 import {decode, encode} from 'base-64';
-import * as Camera from "nativescript-camera";
-import * as Geolocation from "nativescript-geolocation";
-import { Accuracy } from "tns-core-modules/ui/enums";
-const bghttp = require("nativescript-background-http");
-const session = bghttp.session("image-upload");
 
 // Base 64
 if (!global.btoa) {
@@ -20,25 +15,10 @@ if (!global.atob) {
 // Global scope for events
 global.bus = new Vue({});
 
-// Session for image upload
-global.bghttpSession = session;
-
-// ImgBB API key
-global.apiKey = "0b0174ed0aded05168ca96a1ea5e9e84";
-
 // Axios
 global.axios = Axios.create({
     baseURL: 'http://51.91.8.97:18380/'
 });
-
-// Camera Module
-global.camera = Camera;
-
-// Geolocation Module
-global.geolocation = Geolocation;
-
-// Accuracy for geolocation
-global.accuracy = Accuracy;
 
 // User who's currently logged in
 global.user = null;

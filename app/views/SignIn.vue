@@ -37,8 +37,8 @@
         name: "SignIn",
         data() {
             return {
-                email: null,
-                password: null
+                email: "test1@test.fr",
+                password: "1234"
             }
         },
         methods: {

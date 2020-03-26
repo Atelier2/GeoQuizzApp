@@ -9,63 +9,55 @@
 </template>
 
 <script>
+    import { uploadToImgBB } from "../modules/PhotoModule";
+    import SignIn from "../views/SignIn";
+
     export default {
         name: "AddTodoModal",
+        props: [
+
+        ],
         data() {
             return {
                 text: null,
                 uploadDone: false
             }
         },
+        methods: {
+            uploadToGeoQuizz(image, url) {
+                global.axios.post(`users/${global.user.id}/pictures/`,{
+                    description: "Cool photo", // TODO: get description dynamically
+                    latitude: image.location.latitude,
+                    longitude: image.location.longitude,
+                    link: url
+                }).then(response => {
+                    this.text = "Uploaded!";
+                    this.uploadDone = true;
+                }).catch(err => {
+                    let errorResponse = JSON.parse(err.response.request._response);
+                    if (errorResponse.error === 401) {
+                        alert({
+                            title: "Error",
+                            message: "Your session expired, you must sign back in.",
+                            okButtonText: "Sign In"
+                        }).then(() => {
+                            this.$navigateTo(SignIn);
+                        });
+                    }
+                });
+            },
 
+            ImgBBErrorHandler() {
+                this.text = "An error occured!";
+                this.uploadDone = true;
+            }
+        },
         created(){
-            global.bus.$on("uploadRequested", image => {
-                let filePath = image.imageAsset._android !== undefined ? image.imageAsset._android : image.imageAsset._ios;
-                let request = {
-                    url: `https://api.imgbb.com/1/upload?key=${global.apiKey}`,
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/octet-stream"
-                    },
-                    description: "Uploading image"
-                };
-                let params = [
-                    { name: "image", filename: filePath, mimeType: "img/jpeg" }
-                ];
-
-                let upload = global.bghttpSession.multipartUpload(params, request);
-
-                upload.on("responded", event => {
-                    global.axios.post(`users/${global.user.id}/pictures/`,{
-                        description: "Cool photo", // TODO: get description dynamically
-                        latitude: image.location.latitude,
-                        longitude: image.location.longitude,
-                        link: JSON.parse(event.data).data.url // TODO: make this ugly code readable
-                    }).then(response => {
-                        this.text = "Uploaded!";
-                        this.uploadDone = true;
-                    }).catch(err => {
-                        let errorResponse = JSON.parse(err.response.request._response);
-                        if (errorResponse.error === 401) {
-                            alert({
-                                title: "Error",
-                                message: "Your session expired, you must sign back in.",
-                                okButtonText: "Sign In"
-                            });
-                        }
-                    });
-                });
-
-                upload.on("error", event => {
-                    this.text = `An error ${event.responseCode} occured.`;
-                    this.uploadDone = true;
-                });
-
-                upload.on("cancelled", () => {
-                    this.text = "Upload was cancelled.";
-                    this.uploadDone = true;
-                });
+            global.bus.$on("uploadToGlobal", image => {
+                uploadToImgBB(image, this.uploadToGeoQuizz, this.ImgBBErrorHandler);
             });
+
+            //global.bus.$on("uploadToSeries", image)
         }
     }
 </script>
