@@ -34,7 +34,7 @@
                     </StackLayout>
 
                     <StackLayout class="input-field" marginBottom="15">
-                        <TextField class="input" style="placeholder-color: rgba(255, 255, 255, 0.5);" hint="Phone number" keyboardType="phone" autocorrect="false" autocapitalizationType="none" v-model="phone" returnKeyType="next" fontSize="18" />
+                        <TextField class="input" style="placeholder-color: rgba(255, 255, 255, 0.5);" hint="Phone number (Optional)" keyboardType="phone" autocorrect="false" autocapitalizationType="none" v-model="phone" returnKeyType="next" fontSize="18" />
                         <StackLayout class="hr-light" />
                     </StackLayout>
 
@@ -72,7 +72,7 @@
 </template>
 
 <script>
-    import SignIn from "./SignIn";
+    import OptionSelect from "./OptionSelect";
 
     export default {
         name: "SignUp",
@@ -92,9 +92,7 @@
         },
         methods: {
             signUp() {
-                this.goToSignIn();
-
-                /*let params = {
+                let params = {
                     firstname: this.firstname,
                     lastname: this.lastname,
                     email: this.email,
@@ -106,15 +104,20 @@
                     zip_code: this.zipCode
                 };
 
+                if (!this.phone) {
+                    delete params.phone;
+                }
+
                 if (this.password === this.confirmPassword) {
-                    global.axios.post('user/signup', params)
+                    global.axios.post('users/signup/', params)
                         .then(response => {
-                            console.log(response.data);
-                            this.goToSignIn();
+                            global.user = response.data.user;
+                            this.goToOptionSelect();
                         }).catch(err => {
+                            let errorResponse = JSON.parse(err.response.request._response);
                             alert({
                                 title: "Error",
-                                message: err.message,
+                                message: errorResponse.message,
                                 okButtonText: "OK"
                             });
                     });
@@ -124,11 +127,11 @@
                         message: "Your passwords are not identical.",
                         okButtonText: "OK"
                     });
-                }*/
+                }
             },
 
-            goToSignIn() {
-                this.$navigateTo(SignIn);
+            goToOptionSelect() {
+                this.$navigateTo(OptionSelect);
             }
         }
     };

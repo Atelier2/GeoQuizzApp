@@ -43,24 +43,22 @@
         },
         methods: {
             signIn() {
-                this.$navigateTo(OptionSelect);
-
-                /*global.axios.post('user/signin', {}, {
+                global.axios.post('users/signin', {}, {
                     auth: {
                         username: this.email,
                         password: this.password
                     }
                 }).then(response => {
-                    global.token = `Bearer ${response.data.token}`;
-                    console.log(`Je me suis bien connecté et mon token est ${response.data.token}`);
-                    // TODO: go to main page
+                    global.user = response.data.user;
+                    this.$navigateTo(OptionSelect);
                 }).catch(err => {
+                    let errorResponse = JSON.parse(err.response.request._response);
                     alert({
                         title: "Error",
-                        message: err.message,
+                        message: errorResponse.message,
                         okButtonText: "OK"
                     });
-                });*/
+                });
             },
 
             goToSignUp() {
