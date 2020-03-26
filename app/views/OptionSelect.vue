@@ -26,26 +26,48 @@
             openCamera() {
                 global.camera.requestPermissions()
                     .then(() => {
-                        global.camera.takePicture({
-                            width: 300,
-                            height: 300,
-                            keepAspectRatio: true,
-                            saveToGallery: false
-                        }).then(imageAsset => {
-                            this.upload(imageAsset);
+                        global.geolocation.enableLocationRequest()
+                            .then(() => {
+                                global.camera.takePicture({
+                                    width: 300,
+                                    height: 300,
+                                    keepAspectRatio: true,
+                                    saveToGallery: false
+                                }).then(imageAsset => {
+                                    global.geolocation.getCurrentLocation({
+                                        desiredAccuracy: global.accuracy.high,
+                                        maximumAge: 5000,
+                                        timeout: 20000
+                                    }).then(location => {
+                                        let image = {
+                                            imageAsset: imageAsset,
+                                            location: {
+                                                latitude: location.latitude,
+                                                longitude: location.longitude
+                                            }
+                                        };
+                                        this.upload(image);
+                                    }).catch(err => console.log("Couldn't get location"));
+                                });
+                            }).catch(err => {
+                                alert({
+                                    title: "Error",
+                                    message: "You must give permissions to take pictures.",
+                                    okButtonText: "OK"
+                                });
                         });
                     }).catch(err => {
                         alert({
                             title: "Error",
                             message: "You must give permissions to take pictures.",
                             okButtonText: "OK"
-                        })
+                        });
                 });
             },
 
-            upload(imageAsset) {
-                this.$showModal(UploadModal, { props: { imageAsset: imageAsset} });
-                global.bus.$emit("uploadRequested", imageAsset);
+            upload(image) {
+                this.$showModal(UploadModal);
+                global.bus.$emit("uploadRequested", image);
             },
 
             goToSeries() {

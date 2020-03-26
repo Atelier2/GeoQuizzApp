@@ -112,6 +112,7 @@
                     global.axios.post('users/signup/', params)
                         .then(response => {
                             global.user = response.data.user;
+                            global.axios.defaults.headers.Authorization = `Bearer ${global.user.token}`;
                             this.goToOptionSelect();
                         }).catch(err => {
                             let errorResponse = JSON.parse(err.response.request._response);

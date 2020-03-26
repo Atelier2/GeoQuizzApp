@@ -3,6 +3,8 @@ import Axios from "axios";
 import Home from "./components/Home";
 import {decode, encode} from 'base-64';
 import * as Camera from "nativescript-camera";
+import * as Geolocation from "nativescript-geolocation";
+import { Accuracy } from "tns-core-modules/ui/enums";
 const bghttp = require("nativescript-background-http");
 const session = bghttp.session("image-upload");
 
@@ -31,6 +33,12 @@ global.axios = Axios.create({
 
 // Camera Module
 global.camera = Camera;
+
+// Geolocation Module
+global.geolocation = Geolocation;
+
+// Accuracy for geolocation
+global.accuracy = Accuracy;
 
 // User who's currently logged in
 global.user = null;
