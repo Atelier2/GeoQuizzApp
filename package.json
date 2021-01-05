@@ -15,7 +15,7 @@
     "@nativescript/theme": "~2.3.0",
     "@nstudio/nativescript-checkbox": "^1.0.0",
     "@nstudio/nativescript-floatingactionbutton": "^2.0.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "base-64": "^0.1.0",
     "nativescript-background-http": "^4.2.1",
     "nativescript-camera": "^4.5.0",
